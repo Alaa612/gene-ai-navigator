@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -418,7 +417,12 @@ const Compare = () => {
                               <CartesianGrid strokeDasharray="3 3" />
                               <XAxis dataKey="name" angle={-45} textAnchor="end" height={60} />
                               <YAxis label={{ value: 'Efficiency Score', angle: -90, position: 'insideLeft' }} />
-                              <Tooltip formatter={(value) => [`${value.toFixed(2)}`, 'Efficiency']} />
+                              <Tooltip formatter={(value) => {
+                                if (typeof value === 'number') {
+                                  return [`${value.toFixed(2)}`, 'Efficiency']
+                                }
+                                return [value, 'Efficiency']
+                              }} />
                               <Legend />
                               <Bar dataKey="value" fill="#7E69AB" name="Efficiency Score" />
                             </BarChart>
