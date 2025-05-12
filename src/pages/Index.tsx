@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Dna } from "lucide-react";
 import DNAAnimation from "@/components/DNAAnimation";
 import FeatureCard from "@/components/FeatureCard";
 import Navbar from "@/components/Navbar";
@@ -54,6 +54,9 @@ const Index = () => {
                 <div className="relative h-64 md:h-96 animate-float">
                   <DNAAnimation className="absolute inset-0" />
                   <div className="absolute inset-0 bg-gradient-to-br from-genomic-purple/20 to-genomic-blue/20 rounded-3xl backdrop-blur-sm glass-card animate-pulse-gentle"></div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Dna size={120} className="text-genomic-purple/80" strokeWidth={1.5} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -72,11 +75,7 @@ const Index = () => {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <FeatureCard
-                icon={
-                  <svg className="w-6 h-6 text-genomic-purple" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm11 1H6v8l4-2 4 2V6z" clipRule="evenodd" />
-                  </svg>
-                }
+                icon={<Dna className="w-6 h-6 text-genomic-purple" />}
                 title="Text-Based Classification"
                 description="Upload or paste text descriptions of genetic mutations extracted from medical literature or research papers."
               />
@@ -92,11 +91,7 @@ const Index = () => {
               />
 
               <FeatureCard
-                icon={
-                  <svg className="w-6 h-6 text-genomic-purple" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
-                  </svg>
-                }
+                icon={<Dna className="w-6 h-6 text-genomic-purple" />}
                 title="Visual Result Analysis"
                 description="Visualize classification results through intuitive charts, accuracy metrics, and performance comparisons."
               />
@@ -112,11 +107,7 @@ const Index = () => {
               />
 
               <FeatureCard
-                icon={
-                  <svg className="w-6 h-6 text-genomic-purple" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                  </svg>
-                }
+                icon={<Dna className="w-6 h-6 text-genomic-purple" />}
                 title="Real-time Processing"
                 description="Get instantaneous classification results without lengthy processing times, thanks to our optimized algorithms."
               />

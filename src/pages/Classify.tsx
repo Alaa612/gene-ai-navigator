@@ -45,26 +45,112 @@ const algorithms = [
   },
 ];
 
-// Mock data for visualization
-const resultData = [
-  { name: 'Class A', probability: 0.72 },
-  { name: 'Class B', probability: 0.21 },
-  { name: 'Class C', probability: 0.05 },
-  { name: 'Class D', probability: 0.02 },
-];
+// Different result data for each algorithm
+const getResultDataForAlgorithm = (algorithmId: string) => {
+  switch (algorithmId) {
+    case 'logistic-regression':
+      return [
+        { name: 'Class A', probability: 0.72 },
+        { name: 'Class B', probability: 0.21 },
+        { name: 'Class C', probability: 0.05 },
+        { name: 'Class D', probability: 0.02 },
+      ];
+    case 'svm':
+      return [
+        { name: 'Class A', probability: 0.68 },
+        { name: 'Class B', probability: 0.24 },
+        { name: 'Class C', probability: 0.06 },
+        { name: 'Class D', probability: 0.02 },
+      ];
+    case 'random-forest':
+      return [
+        { name: 'Class A', probability: 0.81 },
+        { name: 'Class B', probability: 0.12 },
+        { name: 'Class C', probability: 0.04 },
+        { name: 'Class D', probability: 0.03 },
+      ];
+    case 'neural-network':
+      return [
+        { name: 'Class A', probability: 0.89 },
+        { name: 'Class B', probability: 0.08 },
+        { name: 'Class C', probability: 0.02 },
+        { name: 'Class D', probability: 0.01 },
+      ];
+    default:
+      return [
+        { name: 'Class A', probability: 0.72 },
+        { name: 'Class B', probability: 0.21 },
+        { name: 'Class C', probability: 0.05 },
+        { name: 'Class D', probability: 0.02 },
+      ];
+  }
+};
 
-const confusionMatrix = [
-  { name: 'True Positive', value: 85 },
-  { name: 'False Positive', value: 7 },
-  { name: 'False Negative', value: 5 },
-  { name: 'True Negative', value: 80 },
-];
+// Different confusion matrix for each algorithm
+const getConfusionMatrixForAlgorithm = (algorithmId: string) => {
+  switch (algorithmId) {
+    case 'logistic-regression':
+      return [
+        { name: 'True Positive', value: 78 },
+        { name: 'False Positive', value: 10 },
+        { name: 'False Negative', value: 12 },
+        { name: 'True Negative', value: 76 },
+      ];
+    case 'svm':
+      return [
+        { name: 'True Positive', value: 83 },
+        { name: 'False Positive', value: 8 },
+        { name: 'False Negative', value: 7 },
+        { name: 'True Negative', value: 79 },
+      ];
+    case 'random-forest':
+      return [
+        { name: 'True Positive', value: 85 },
+        { name: 'False Positive', value: 7 },
+        { name: 'False Negative', value: 5 },
+        { name: 'True Negative', value: 80 },
+      ];
+    case 'neural-network':
+      return [
+        { name: 'True Positive', value: 90 },
+        { name: 'False Positive', value: 5 },
+        { name: 'False Negative', value: 3 },
+        { name: 'True Negative', value: 83 },
+      ];
+    default:
+      return [
+        { name: 'True Positive', value: 85 },
+        { name: 'False Positive', value: 7 },
+        { name: 'False Negative', value: 5 },
+        { name: 'True Negative', value: 80 },
+      ];
+  }
+};
+
+// Performance metrics for each algorithm
+const getPerformanceMetricsForAlgorithm = (algorithmId: string) => {
+  const algorithm = algorithms.find(a => a.id === algorithmId);
+  const baseAccuracy = algorithm ? algorithm.accuracy : 78;
+  
+  return {
+    accuracy: baseAccuracy,
+    precision: baseAccuracy + Math.floor(Math.random() * 8) - 2,
+    recall: baseAccuracy - Math.floor(Math.random() * 5),
+    f1Score: baseAccuracy - Math.floor(Math.random() * 3),
+    processingTime: algorithm?.id === 'neural-network' ? 3.45 : 
+                    algorithm?.id === 'random-forest' ? 1.78 : 
+                    algorithm?.id === 'svm' ? 1.12 : 0.82
+  };
+};
 
 const Classify = () => {
   const [inputText, setInputText] = useState('');
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<boolean>(false);
+  const [resultData, setResultData] = useState<Array<{ name: string; probability: number }>>([]);
+  const [confusionMatrix, setConfusionMatrix] = useState<Array<{ name: string; value: number }>>([]);
+  const [performanceMetrics, setPerformanceMetrics] = useState<any>(null);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -95,6 +181,11 @@ const Classify = () => {
       setIsProcessing(false);
       setResults(true);
       
+      // Set algorithm-specific results
+      setResultData(getResultDataForAlgorithm(selectedAlgorithm));
+      setConfusionMatrix(getConfusionMatrixForAlgorithm(selectedAlgorithm));
+      setPerformanceMetrics(getPerformanceMetricsForAlgorithm(selectedAlgorithm));
+      
       toast({
         title: "Classification Complete",
         description: "Your genetic mutation has been classified successfully!",
@@ -121,6 +212,9 @@ const Classify = () => {
     setInputText('');
     setSelectedAlgorithm(null);
     setResults(false);
+    setResultData([]);
+    setConfusionMatrix([]);
+    setPerformanceMetrics(null);
   };
 
   return (
@@ -237,10 +331,10 @@ const Classify = () => {
                             <span className="font-semibold">Algorithm:</span> {algorithms.find(a => a.id === selectedAlgorithm)?.name}
                           </p>
                           <p className="mb-2">
-                            <span className="font-semibold">Primary Classification:</span> Class A (72% probability)
+                            <span className="font-semibold">Primary Classification:</span> {resultData[0]?.name} ({(resultData[0]?.probability * 100).toFixed(0)}% probability)
                           </p>
                           <p className="mb-6">
-                            <span className="font-semibold">Confidence Level:</span> High
+                            <span className="font-semibold">Confidence Level:</span> {resultData[0]?.probability > 0.8 ? 'High' : resultData[0]?.probability > 0.6 ? 'Medium' : 'Low'}
                           </p>
                           
                           <Button onClick={handleDownload} className="btn-gradient">
@@ -339,89 +433,91 @@ const Classify = () => {
                       <CardTitle>Performance Metrics</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div>
-                          <h3 className="text-lg font-medium mb-3">Confusion Matrix</h3>
-                          <div className="h-64">
-                            <ResponsiveContainer width="100%" height="100%">
-                              <BarChart
-                                data={confusionMatrix}
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                              >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="name" />
-                                <YAxis />
-                                <Tooltip />
-                                <Bar dataKey="value" fill="#33C3F0" name="Count" />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <h3 className="text-lg font-medium mb-3">Key Metrics</h3>
-                          <div className="space-y-4">
-                            <div>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">Accuracy</p>
-                              <div className="flex items-center">
-                                <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mr-2">
-                                  <div 
-                                    className="h-2 bg-genomic-purple rounded-full" 
-                                    style={{ width: "88%" }}
-                                  />
-                                </div>
-                                <span className="text-sm font-medium">88%</span>
-                              </div>
-                            </div>
-                            
-                            <div>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">Precision</p>
-                              <div className="flex items-center">
-                                <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mr-2">
-                                  <div 
-                                    className="h-2 bg-genomic-purple rounded-full" 
-                                    style={{ width: "92%" }}
-                                  />
-                                </div>
-                                <span className="text-sm font-medium">92%</span>
-                              </div>
-                            </div>
-                            
-                            <div>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">Recall</p>
-                              <div className="flex items-center">
-                                <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mr-2">
-                                  <div 
-                                    className="h-2 bg-genomic-purple rounded-full" 
-                                    style={{ width: "85%" }}
-                                  />
-                                </div>
-                                <span className="text-sm font-medium">85%</span>
-                              </div>
-                            </div>
-                            
-                            <div>
-                              <p className="text-sm text-gray-500 dark:text-gray-400">F1 Score</p>
-                              <div className="flex items-center">
-                                <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mr-2">
-                                  <div 
-                                    className="h-2 bg-genomic-purple rounded-full" 
-                                    style={{ width: "88%" }}
-                                  />
-                                </div>
-                                <span className="text-sm font-medium">88%</span>
-                              </div>
+                      {performanceMetrics && (
+                        <div className="grid md:grid-cols-2 gap-6">
+                          <div>
+                            <h3 className="text-lg font-medium mb-3">Confusion Matrix</h3>
+                            <div className="h-64">
+                              <ResponsiveContainer width="100%" height="100%">
+                                <BarChart
+                                  data={confusionMatrix}
+                                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                                >
+                                  <CartesianGrid strokeDasharray="3 3" />
+                                  <XAxis dataKey="name" />
+                                  <YAxis />
+                                  <Tooltip />
+                                  <Bar dataKey="value" fill="#33C3F0" name="Count" />
+                                </BarChart>
+                              </ResponsiveContainer>
                             </div>
                           </div>
                           
-                          <div className="mt-8">
-                            <h4 className="text-md font-medium mb-2">Processing Time</h4>
-                            <p className="text-slate-700 dark:text-slate-300">
-                              <span className="font-semibold">Total time:</span> 1.24 seconds
-                            </p>
+                          <div>
+                            <h3 className="text-lg font-medium mb-3">Key Metrics</h3>
+                            <div className="space-y-4">
+                              <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Accuracy</p>
+                                <div className="flex items-center">
+                                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mr-2">
+                                    <div 
+                                      className="h-2 bg-genomic-purple rounded-full" 
+                                      style={{ width: `${performanceMetrics.accuracy}%` }}
+                                    />
+                                  </div>
+                                  <span className="text-sm font-medium">{performanceMetrics.accuracy}%</span>
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Precision</p>
+                                <div className="flex items-center">
+                                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mr-2">
+                                    <div 
+                                      className="h-2 bg-genomic-purple rounded-full" 
+                                      style={{ width: `${performanceMetrics.precision}%` }}
+                                    />
+                                  </div>
+                                  <span className="text-sm font-medium">{performanceMetrics.precision}%</span>
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Recall</p>
+                                <div className="flex items-center">
+                                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mr-2">
+                                    <div 
+                                      className="h-2 bg-genomic-purple rounded-full" 
+                                      style={{ width: `${performanceMetrics.recall}%` }}
+                                    />
+                                  </div>
+                                  <span className="text-sm font-medium">{performanceMetrics.recall}%</span>
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">F1 Score</p>
+                                <div className="flex items-center">
+                                  <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full mr-2">
+                                    <div 
+                                      className="h-2 bg-genomic-purple rounded-full" 
+                                      style={{ width: `${performanceMetrics.f1Score}%` }}
+                                    />
+                                  </div>
+                                  <span className="text-sm font-medium">{performanceMetrics.f1Score}%</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="mt-8">
+                              <h4 className="text-md font-medium mb-2">Processing Time</h4>
+                              <p className="text-slate-700 dark:text-slate-300">
+                                <span className="font-semibold">Total time:</span> {performanceMetrics.processingTime.toFixed(2)} seconds
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )}
                     </CardContent>
                   </Card>
                 </TabsContent>
