@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -53,11 +52,10 @@ const Index = () => {
               <div className="md:w-1/2 mt-12 md:mt-0">
                 <div className="relative h-64 md:h-96 animate-float">
                   <img 
-                    src="/lovable-uploads/c5224922-ddb0-4581-b658-7baf41f55b65.png" 
-                    alt="DNA structure visualization" 
-                    className="absolute inset-0 object-cover w-full h-full rounded-3xl"
+                    src="/lovable-uploads/9060548d-35d6-4e37-bde5-ac534d8dc871.png" 
+                    alt="DNA light bulb visualization" 
+                    className="absolute inset-0 object-contain w-full h-full rounded-3xl"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-br from-genomic-purple/10 to-genomic-blue/10 rounded-3xl backdrop-blur-sm glass-card animate-pulse-gentle"></div>
                 </div>
               </div>
             </div>
@@ -84,7 +82,7 @@ const Index = () => {
               <FeatureCard
                 icon={
                   <svg className="w-6 h-6 text-genomic-blue" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z" clipRule="evenodd" />
+                    <path fillRule="evenodd" d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2v-2a2 2 0 012-2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2H5zM5 11a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2a2 2 0 012-2h-2a2 2 0 01-2 2z" clipRule="evenodd" />
                   </svg>
                 }
                 title="Multiple ML Algorithms"
