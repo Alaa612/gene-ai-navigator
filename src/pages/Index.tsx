@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -52,9 +53,9 @@ const Index = () => {
               <div className="md:w-1/2 mt-12 md:mt-0">
                 <div className="relative h-64 md:h-96 animate-float">
                   <img 
-                    src="/lovable-uploads/9060548d-35d6-4e37-bde5-ac534d8dc871.png" 
-                    alt="DNA light bulb visualization" 
-                    className="absolute inset-0 object-contain w-full h-full rounded-3xl"
+                    src="/lovable-uploads/c5224922-ddb0-4581-b658-7baf41f55b65.png" 
+                    alt="DNA structure visualization" 
+                    className="absolute inset-0 object-cover w-full h-full rounded-3xl"
                   />
                 </div>
               </div>
