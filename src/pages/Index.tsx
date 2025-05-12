@@ -52,11 +52,12 @@ const Index = () => {
               </div>
               <div className="md:w-1/2 mt-12 md:mt-0">
                 <div className="relative h-64 md:h-96 animate-float">
-                  <DNAAnimation className="absolute inset-0" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-genomic-purple/20 to-genomic-blue/20 rounded-3xl backdrop-blur-sm glass-card animate-pulse-gentle"></div>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Dna size={120} className="text-genomic-purple/80" strokeWidth={1.5} />
-                  </div>
+                  <img 
+                    src="/lovable-uploads/c5224922-ddb0-4581-b658-7baf41f55b65.png" 
+                    alt="DNA structure visualization" 
+                    className="absolute inset-0 object-cover w-full h-full rounded-3xl"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-br from-genomic-purple/10 to-genomic-blue/10 rounded-3xl backdrop-blur-sm glass-card animate-pulse-gentle"></div>
                 </div>
               </div>
             </div>
