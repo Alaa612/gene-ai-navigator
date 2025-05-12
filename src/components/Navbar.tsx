@@ -40,10 +40,12 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-genomic-purple to-genomic-blue flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 6L21 17H3L12 6Z" fill="currentColor" />
-                </svg>
+              <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
+                <img 
+                  src="/lovable-uploads/9d65ea3b-f79e-41b0-9bbe-3a592ea5d5f4.png" 
+                  alt="GeneMutate Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="ml-2 text-xl font-bold bg-gradient-to-r from-genomic-purple to-genomic-blue bg-clip-text text-transparent">
                 GeneMutate
