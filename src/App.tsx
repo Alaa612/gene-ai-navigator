@@ -9,6 +9,7 @@ import About from "./pages/About";
 import Classify from "./pages/Classify";
 import Compare from "./pages/Compare";
 import Help from "./pages/Help";
+import Dataset from "./pages/Dataset";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/classify" element={<Classify />} />
           <Route path="/compare" element={<Compare />} />
           <Route path="/help" element={<Help />} />
+          <Route path="/dataset" element={<Dataset />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
