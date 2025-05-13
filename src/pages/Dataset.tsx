@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { downloadGeneDataset, generateGeneExpressionDataset } from '@/utils/geneDataset';
@@ -6,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Navbar } from '@/components/Navbar';
-import { Footer } from '@/components/Footer';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 const Dataset = () => {
   const [previewData, setPreviewData] = useState<string>('');
