@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AlgorithmCard from "@/components/AlgorithmCard";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { Input } from '@/components/ui/input';
+import { AlertCircle } from 'lucide-react';
 
 const algorithms = [
   {
@@ -34,6 +36,14 @@ const algorithms = [
     accuracy: 88,
     speed: 'Medium',
     tooltip: 'Combines multiple decision trees to create a more accurate and stable prediction. Good for handling non-linear relationships.'
+  },
+  {
+    id: 'xgboost',
+    name: 'XGBoost',
+    description: 'Gradient boosting framework',
+    accuracy: 94,
+    speed: 'Medium',
+    tooltip: 'eXtreme Gradient Boosting is an optimized distributed gradient boosting library. Provides higher accuracy than neural networks for many structured/tabular data problems.'
   },
   {
     id: 'neural-network',
@@ -68,6 +78,13 @@ const getResultDataForAlgorithm = (algorithmId: string) => {
         { name: 'Class B', probability: 0.12 },
         { name: 'Class C', probability: 0.04 },
         { name: 'Class D', probability: 0.03 },
+      ];
+    case 'xgboost':
+      return [
+        { name: 'Class A', probability: 0.91 },
+        { name: 'Class B', probability: 0.06 },
+        { name: 'Class C', probability: 0.02 },
+        { name: 'Class D', probability: 0.01 },
       ];
     case 'neural-network':
       return [
@@ -110,6 +127,13 @@ const getConfusionMatrixForAlgorithm = (algorithmId: string) => {
         { name: 'False Negative', value: 5 },
         { name: 'True Negative', value: 80 },
       ];
+    case 'xgboost':
+      return [
+        { name: 'True Positive', value: 92 },
+        { name: 'False Positive', value: 4 },
+        { name: 'False Negative', value: 2 },
+        { name: 'True Negative', value: 86 },
+      ];
     case 'neural-network':
       return [
         { name: 'True Positive', value: 90 },
@@ -138,6 +162,7 @@ const getPerformanceMetricsForAlgorithm = (algorithmId: string) => {
     recall: baseAccuracy - Math.floor(Math.random() * 5),
     f1Score: baseAccuracy - Math.floor(Math.random() * 3),
     processingTime: algorithm?.id === 'neural-network' ? 3.45 : 
+                    algorithm?.id === 'xgboost' ? 2.10 :
                     algorithm?.id === 'random-forest' ? 1.78 : 
                     algorithm?.id === 'svm' ? 1.12 : 0.82
   };
@@ -145,21 +170,68 @@ const getPerformanceMetricsForAlgorithm = (algorithmId: string) => {
 
 const Classify = () => {
   const [inputText, setInputText] = useState('');
+  const [csvData, setCsvData] = useState<string | null>(null);
+  const [csvFilename, setCsvFilename] = useState<string>('');
+  const [inputMethod, setInputMethod] = useState<'text' | 'csv'>('text');
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState<boolean>(false);
   const [resultData, setResultData] = useState<Array<{ name: string; probability: number }>>([]);
   const [confusionMatrix, setConfusionMatrix] = useState<Array<{ name: string; value: number }>>([]);
   const [performanceMetrics, setPerformanceMetrics] = useState<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+
+  const handleCsvUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Check if it's a CSV file
+    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+      toast({
+        title: "Error",
+        description: "Please upload a valid CSV file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const csvContent = event.target?.result as string;
+      setCsvData(csvContent);
+      setCsvFilename(file.name);
+      toast({
+        title: "CSV Uploaded",
+        description: `Loaded ${file.name} successfully`,
+      });
+    };
+    reader.onerror = () => {
+      toast({
+        title: "Error",
+        description: "Failed to read the CSV file",
+        variant: "destructive",
+      });
+    };
+    reader.readAsText(file);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!inputText.trim()) {
+    if (inputMethod === 'text' && !inputText.trim()) {
       toast({
         title: "Error",
         description: "Please enter mutation text to classify",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (inputMethod === 'csv' && !csvData) {
+      toast({
+        title: "Error",
+        description: "Please upload a CSV file",
         variant: "destructive",
       });
       return;
@@ -210,11 +282,20 @@ const Classify = () => {
 
   const handleReset = () => {
     setInputText('');
+    setCsvData(null);
+    setCsvFilename('');
     setSelectedAlgorithm(null);
     setResults(false);
     setResultData([]);
     setConfusionMatrix([]);
     setPerformanceMetrics(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -250,26 +331,90 @@ const Classify = () => {
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleSubmit}>
-                      <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Enter or paste text describing the genetic mutation:
-                        </label>
-                        <Textarea 
-                          value={inputText}
-                          onChange={(e) => setInputText(e.target.value)}
-                          placeholder="E.g., The TP53 gene mutation leads to a substitution of arginine with histidine at position 175, resulting in a non-functional p53 protein that cannot bind to DNA..."
-                          className="h-40"
-                        />
+                      <div className="mb-6">
+                        <div className="flex space-x-4 mb-4">
+                          <Button 
+                            type="button" 
+                            onClick={() => setInputMethod('text')}
+                            variant={inputMethod === 'text' ? 'default' : 'outline'}
+                            className={inputMethod === 'text' ? 'bg-genomic-purple hover:bg-genomic-purple-dark' : ''}
+                          >
+                            Text Input
+                          </Button>
+                          <Button 
+                            type="button" 
+                            onClick={() => setInputMethod('csv')}
+                            variant={inputMethod === 'csv' ? 'default' : 'outline'}
+                            className={inputMethod === 'csv' ? 'bg-genomic-purple hover:bg-genomic-purple-dark' : ''}
+                          >
+                            CSV Upload
+                          </Button>
+                        </div>
+
+                        {inputMethod === 'text' ? (
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                              Enter or paste text describing the genetic mutation:
+                            </label>
+                            <Textarea 
+                              value={inputText}
+                              onChange={(e) => setInputText(e.target.value)}
+                              placeholder="E.g., The TP53 gene mutation leads to a substitution of arginine with histidine at position 175, resulting in a non-functional p53 protein that cannot bind to DNA..."
+                              className="h-40"
+                            />
+                          </div>
+                        ) : (
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                              Upload CSV file with mutation data:
+                            </label>
+                            <div className="flex flex-col space-y-3">
+                              <Input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".csv"
+                                onChange={handleCsvUpload}
+                                className="hidden"
+                              />
+                              <Button 
+                                type="button"
+                                variant="outline"
+                                onClick={triggerFileInput}
+                                className="w-full flex justify-center items-center h-20 border-dashed"
+                              >
+                                {csvFilename ? (
+                                  <span className="text-sm font-medium">{csvFilename}</span>
+                                ) : (
+                                  <span>Click to Upload CSV</span>
+                                )}
+                              </Button>
+                              
+                              {csvData && (
+                                <div className="bg-muted p-3 rounded-md text-sm">
+                                  <div className="font-medium mb-1">CSV Preview:</div>
+                                  <div className="overflow-x-auto max-h-32 text-xs">
+                                    <pre>{csvData.split('\n').slice(0, 5).join('\n')}{csvData.split('\n').length > 5 ? '\n...' : ''}</pre>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              <div className="text-xs text-muted-foreground flex items-center space-x-1">
+                                <AlertCircle size={12} />
+                                <span>CSV should include columns for gene data, mutations, and relevant features</span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                       <div className="flex justify-between">
                         <Button 
                           type="submit" 
                           className="btn-gradient"
-                          disabled={isProcessing || !selectedAlgorithm || !inputText.trim()}
+                          disabled={isProcessing || !selectedAlgorithm || (inputMethod === 'text' && !inputText.trim()) || (inputMethod === 'csv' && !csvData)}
                         >
                           {isProcessing ? "Processing..." : "Classify Mutation"}
                         </Button>
-                        {inputText && (
+                        {(inputText || csvData) && (
                           <Button 
                             type="button"
                             variant="outline"
