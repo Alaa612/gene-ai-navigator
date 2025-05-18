@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -45,14 +44,6 @@ const algorithms = [
     speed: 'Medium',
     tooltip: 'eXtreme Gradient Boosting is an optimized distributed gradient boosting library. Provides higher accuracy than neural networks for many structured/tabular data problems.'
   },
-  {
-    id: 'neural-network',
-    name: 'Neural Network',
-    description: 'Deep learning approach',
-    accuracy: 92,
-    speed: 'Slow',
-    tooltip: 'Complex model inspired by the human brain. Can learn intricate patterns in data but requires more computational resources.'
-  },
 ];
 
 // Different result data for each algorithm
@@ -83,13 +74,6 @@ const getResultDataForAlgorithm = (algorithmId: string) => {
       return [
         { name: 'Class A', probability: 0.91 },
         { name: 'Class B', probability: 0.06 },
-        { name: 'Class C', probability: 0.02 },
-        { name: 'Class D', probability: 0.01 },
-      ];
-    case 'neural-network':
-      return [
-        { name: 'Class A', probability: 0.89 },
-        { name: 'Class B', probability: 0.08 },
         { name: 'Class C', probability: 0.02 },
         { name: 'Class D', probability: 0.01 },
       ];
@@ -134,13 +118,6 @@ const getConfusionMatrixForAlgorithm = (algorithmId: string) => {
         { name: 'False Negative', value: 2 },
         { name: 'True Negative', value: 86 },
       ];
-    case 'neural-network':
-      return [
-        { name: 'True Positive', value: 90 },
-        { name: 'False Positive', value: 5 },
-        { name: 'False Negative', value: 3 },
-        { name: 'True Negative', value: 83 },
-      ];
     default:
       return [
         { name: 'True Positive', value: 85 },
@@ -161,8 +138,7 @@ const getPerformanceMetricsForAlgorithm = (algorithmId: string) => {
     precision: baseAccuracy + Math.floor(Math.random() * 8) - 2,
     recall: baseAccuracy - Math.floor(Math.random() * 5),
     f1Score: baseAccuracy - Math.floor(Math.random() * 3),
-    processingTime: algorithm?.id === 'neural-network' ? 3.45 : 
-                    algorithm?.id === 'xgboost' ? 2.10 :
+    processingTime: algorithm?.id === 'xgboost' ? 2.10 :
                     algorithm?.id === 'random-forest' ? 1.78 : 
                     algorithm?.id === 'svm' ? 1.12 : 0.82
   };
